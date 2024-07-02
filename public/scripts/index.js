@@ -62,14 +62,14 @@ function epochToJsDate(epochTime){
       authBarElement.style.display ='block';
       userDetailsElement.style.display ='block';
       userDetailsElement.innerHTML = user.email;
-  
+      console.log(23);
       // get user UID to get data from database
       var uid = user.uid;
       console.log(uid);
   
       // Database paths (with user UID)
-      var dbPath = 'UsersData/' + uid.toString() + '/readings';
-      var chartPath = 'UsersData/' + uid.toString() + '/charts/range';
+      var dbPath = 'RDdata/Sensores';
+      var chartPath = 'RDdata/Sensores/Caudal';
   
       // Database references
       var dbRef = firebase.database().ref(dbPath);
@@ -94,15 +94,9 @@ function epochToJsDate(epochTime){
         // Get the latest readings and plot them on charts (the number of plotted readings corresponds to the chartRange value)
         dbRef.orderByKey().limitToLast(chartRange).on('child_added', snapshot =>{
           var jsonData = snapshot.toJSON(); // example: {temperature: 25.02, humidity: 50.20, pressure: 1008.48, timestamp:1641317355}
-          // Save values on variables
-          var temperature = jsonData.temperature;
-          var humidity = jsonData.humidity;
-          var pressure = jsonData.pressure;
-          var timestamp = jsonData.timestamp;
-          // Plot the values on the charts
-          plotValues(chartT, timestamp, temperature);
-          plotValues(chartH, timestamp, humidity);
-          plotValues(chartP, timestamp, pressure);
+          console.log(jsonData);
+
+          // ME QUEDE ACA BORRE LA ASIGNACION A LAS VARIABLES, EL ERROR ESTA EN LA PETICION A FIREBASE
         });
       });
   
