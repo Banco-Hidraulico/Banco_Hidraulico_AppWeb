@@ -62,14 +62,14 @@ function epochToJsDate(epochTime){
       authBarElement.style.display ='block';
       userDetailsElement.style.display ='block';
       userDetailsElement.innerHTML = user.email;
-      console.log(23);
+  
       // get user UID to get data from database
       var uid = user.uid;
       console.log(uid);
   
       // Database paths (with user UID)
-      var dbPath = 'RDdata/Sensores';
-      var chartPath = 'RDdata/Sensores/Caudal';
+      var dbPath = 'RDdata' ;
+      var chartPath = 'RDdata/Sensores';
   
       // Database references
       var dbRef = firebase.database().ref(dbPath);
@@ -79,7 +79,7 @@ function epochToJsDate(epochTime){
       // Number of readings to plot on charts
       var chartRange = 0;
       // Get number of readings to plot saved on database (runs when the page first loads and whenever there's a change in the database)
-      chartRef.on('value', snapshot =>{
+      /*chartRef.on('value', snapshot =>{
         chartRange = Number(snapshot.val());
         console.log(chartRange);
         // Delete all data from charts to update with new values when a new range is selected
@@ -94,11 +94,17 @@ function epochToJsDate(epochTime){
         // Get the latest readings and plot them on charts (the number of plotted readings corresponds to the chartRange value)
         dbRef.orderByKey().limitToLast(chartRange).on('child_added', snapshot =>{
           var jsonData = snapshot.toJSON(); // example: {temperature: 25.02, humidity: 50.20, pressure: 1008.48, timestamp:1641317355}
-          console.log(jsonData);
-
-          // ME QUEDE ACA BORRE LA ASIGNACION A LAS VARIABLES, EL ERROR ESTA EN LA PETICION A FIREBASE
+          // Save values on variables
+          var temperature = jsonData.temperature;
+          var humidity = jsonData.humidity;
+          var pressure = jsonData.pressure;
+          var timestamp = jsonData.timestamp;
+          // Plot the values on the charts
+          plotValues(chartT, timestamp, temperature);
+          plotValues(chartH, timestamp, humidity);
+          plotValues(chartP, timestamp, pressure);
         });
-      });
+      });*/
   
       // Update database with new range (input field)
       chartsRangeInputElement.onchange = () =>{
@@ -138,33 +144,22 @@ function epochToJsDate(epochTime){
       // Get the latest readings and display on cards
       dbRef.orderByKey().limitToLast(1).on('child_added', snapshot =>{
         var jsonData = snapshot.toJSON(); // example: {temperature: 25.02, humidity: 50.20, pressure: 1008.48, timestamp:1641317355}
-        var temperature = jsonData.temperature;
-        var humidity = jsonData.humidity;
-        var pressure = jsonData.pressure;
-        var timestamp = jsonData.timestamp;
+        var temperature = jsonData.TemperaturaTanque;
+        console.log(temperature);
         // Update DOM elements
         tempElement.innerHTML = temperature;
-        humElement.innerHTML = humidity;
-        presElement.innerHTML = pressure;
-        updateElement.innerHTML = epochToDateTime(timestamp);
       });
-  
       // GAUGES
       // Get the latest readings and display on gauges
       dbRef.orderByKey().limitToLast(1).on('child_added', snapshot =>{
         var jsonData = snapshot.toJSON(); // example: {temperature: 25.02, humidity: 50.20, pressure: 1008.48, timestamp:1641317355}
-        var temperature = jsonData.temperature;
-        var humidity = jsonData.humidity;
-        var pressure = jsonData.pressure;
-        var timestamp = jsonData.timestamp;
+        var temperature = jsonData.TemperaturaTanque;
+        console.log(2);
+        console.log(temperature);
         // Update DOM elements
         var gaugeT = createTemperatureGauge();
-        var gaugeH = createHumidityGauge();
         gaugeT.draw();
-        gaugeH.draw();
         gaugeT.value = temperature;
-        gaugeH.value = humidity;
-        updateElement.innerHTML = epochToDateTime(timestamp);
       });
   
       // DELETE DATA
