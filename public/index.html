@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ESP Datalogging Firebase App</title>
+    <title>Banco Hidraulico</title>
 
     <!-- include Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-app.js"></script>
@@ -41,6 +41,13 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <!-- include Gauges Javascript library-->
     <script src="https://cdn.rawgit.com/Mikhus/canvas-gauges/gh-pages/download/2.1.7/all/gauge.min.js"></script>
+    <script src="https://unpkg.com/rockiot-ui@latest/build/rockiot.ui.min.js"></script>
+    <!-- linear gauge -->
+    <script src="https://unpkg.com/rockiot-ui@latest/build/rockiot.gauge.linear.js"></script>
+    <!-- radial, level gauge -->
+    <script src="https://unpkg.com/rockiot-ui@latest/build/rockiot.gauge.radial.js"></script>
+    <!-- charts -->
+    <script src="https://unpkg.com/rockiot-ui@latest/build/rockiot.chart.js"></script>
     <!--reference for favicon-->
     <link rel="icon" type="image/png" href="favicon.png">
     <!--reference a stylesheet-->
@@ -52,15 +59,7 @@
 
     <!--TOP BAR-->
     <div class="topnav">
-      <h1>Sensor Readings App <i class="fas fa-clipboard-list"></i></h1>
-    </div>
-
-    <!--AUTHENTICATION BAR (USER DETAILS/LOGOUT BUTTON)-->
-    <div id="authentication-bar" style="display: none;">
-      <p><span id="authentication-status">User logged in</span>
-        <span id="user-details">USEREMAIL</span>
-        <a href="/" id="logout-link">(logout)</a>
-      </p>
+      <h1>Banco Hidraulico <i class="fas fa-clipboard-list"></i></h1>
     </div>
 
     <!--LOGIN FORM-->
@@ -83,39 +82,63 @@
       <!--LAST UPDATE-->
       <p><span class ="date-time">Last update: <span id="lastUpdate"></span></span></p>
       <p>
-        Cards: <input type="checkbox" id="cards-checkbox" name="cards-checkbox" checked>
-        Gauges: <input type="checkbox" id="gauges-checkbox" name="gauges-checkbox" checked>
-        Charts: <input type="checkbox" id="charts-checkbox" name="charts-checkbox" unchecked>
+        Parametros: <input type="checkbox" id="cards-checkbox" name="cards-checkbox" checked>
+        Indicadores: <input type="checkbox" id="gauges-checkbox" name="gauges-checkbox" checked>
+        Graficos: <input type="checkbox" id="charts-checkbox" name="charts-checkbox" unchecked>
       </p>
       <div id="cards-div">
         <div class="cards">
-          <!--TEMPERATURE-->
+          <!--ESTADO-->
           <div class="card">
-            <p><i class="fas fa-thermometer-half" style="color:#059e8a;"></i> TEMPERATURE</p>
-            <p><span class="reading"><span id="temp"></span> &deg;C</span></p>
+            <p><i class="fas fa-thermometer-half" style="color:#059e8a;"></i> ESTADO </p>
+            <p><span class="reading"><span id="estado"></span> &deg;C</span></p>
           </div>
-          <!--HUMIDITY-->
+          <!--MODO DE OPERACION-->
           <div class="card">
-            <p><i class="fas fa-tint" style="color:#00add6;"></i> HUMIDITY</p>
-            <p><span class="reading"><span id="hum"></span> &percnt;</span></p>
+            <p><i class="fas fa-tint" style="color:#00add6;"></i> MODO DE OPERACION</p>
+            <p><span class="reading"><span id="modo"></span> &percnt;</span></p>
           </div>
-          <!--PRESSURE-->
+          <!--SOLICITUD ACCESO REMOTO-->
           <div class="card">
-            <p><i class="fas fa-angle-double-down" style="color:#e1e437;"></i> PRESSURE</p>
-            <p><span class="reading"><span id="pres"></span> hPa</span></p>
+            <p><i class="fas fa-angle-double-down" style="color:#e1e437;"></i> ACCESO REMOTO</p>
+            <p><span class="reading"><span id="acceso"></span> hPa</span></p>
           </div>
         </div>
       </div>
       <!--GAUGES-->
       <div id ="gauges-div">
         <div class="cards">
-          <!--TEMPERATURE-->
+          <!--TEMPERATURA TANQUE-->
           <div class="card">
-            <canvas id="gauge-temperature"></canvas>
+            <canvas id="gauge-temperatura-tanque"></canvas>
           </div>
-          <!--HUMIDITY-->
+          <!--TEMPERATURA CANERIA-->
           <div class="card">
-            <canvas id="gauge-humidity"></canvas>
+            <canvas id="gauge-temperatura-caneria"></canvas>
+          </div>
+          <!--NIVEL TANQUE-->
+          <div class="card">
+            <canvas id="gauge-nivel-tanque"></canvas>
+          </div>
+          <!--PRESION JUMO-->
+          <div class="card">
+            <canvas id="gauge-presion-jumo"></canvas>
+          </div>
+          <!--PRESION DELTA-->
+          <div class="card">
+            <canvas id="gauge-presion-delta"></canvas>
+          </div>
+          <!--PRESION BOMBA-->
+          <div class="card">
+            <canvas id="gauge-bomba"></canvas>
+          </div>
+          <!--POSICION VALVULA-->
+          <div class="card">
+            <canvas id="gauge-posicion-valvula"></canvas>
+          </div>
+          <!--CAUDAL-->
+          <div class="card">
+            <canvas id="gauge-caudal"></canvas>
           </div>
         </div>
       </div>
@@ -189,9 +212,25 @@
         <p><button id="load-data" style= "display:none;">More results...</button></p>
       </div>
     </div>
-
   </div>
 
+    <!--FOOTER-->
+    <div id="authentication-bar" style="display: none;">
+      <div class="left">
+        <div class=logout>
+          <button id="logout-link" href="/"><i class="fas fa-unlock-alt"></i>  Cerrar Sesión</button>
+        </div>
+        <div class="center">
+            <span id="authentication-status">Usuario registrado:</span>
+            <span id="user-details">USEREMAIL</span>
+        </div>
+        <div class="right">
+          <a  href="https://github.com/Banco-Hidraulico/Banco_Hidraulico_AppWeb" target="_blank">
+            <button id="proyect"><i class="fab fa-github"></i></button>
+          </a>
+        </div>
+      </div>
+    </div>
     <!--INCLUDE JS FILES-->
     <script src="scripts/auth.js"></script>
     <script src="scripts/charts-definition.js"></script>

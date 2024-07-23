@@ -68,8 +68,8 @@ function epochToJsDate(epochTime){
       console.log(uid);
   
       // Database paths (with user UID)
-      var dbPath = 'UsersData/' + uid.toString() + '/readings';
-      var chartPath = 'UsersData/' + uid.toString() + '/charts/range';
+      var dbPath = 'RDdata' ;
+      var chartPath = 'RDdata/Sensores';
   
       // Database references
       var dbRef = firebase.database().ref(dbPath);
@@ -144,7 +144,7 @@ function epochToJsDate(epochTime){
       // Get the latest readings and display on cards
       dbRef.orderByKey().limitToLast(1).on('child_added', snapshot =>{
         var jsonData = snapshot.toJSON(); // example: {temperature: 25.02, humidity: 50.20, pressure: 1008.48, timestamp:1641317355}
-        var temperature = jsonData.temperature;
+        var temperature = "manual";
         var humidity = jsonData.humidity;
         var pressure = jsonData.pressure;
         var timestamp = jsonData.timestamp;
@@ -158,19 +158,41 @@ function epochToJsDate(epochTime){
       // GAUGES
       // Get the latest readings and display on gauges
       dbRef.orderByKey().limitToLast(1).on('child_added', snapshot =>{
-        var jsonData = snapshot.toJSON(); // example: {temperature: 25.02, humidity: 50.20, pressure: 1008.48, timestamp:1641317355}
-        var temperature = jsonData.temperature;
-        var humidity = jsonData.humidity;
-        var pressure = jsonData.pressure;
-        var timestamp = jsonData.timestamp;
+        var jsonData = snapshot.toJSON();
+        var temperaturaTanque = jsonData.TemperaturaTanque;
+        var temperaturaCaneria = jsonData.TemperaturaCaneria;
+        var nivelTanque = jsonData.NivelTanque;
+        var presionJumo = jsonData.PresionJumo;
+        var presionDelta = jsonData.PresionDelta;
+        var velocidadBomba = jsonData.VelocidadBomba;
+        var posicionValvula = jsonData.PosicionValvula;
+        var caudal = jsonData.Caudal;
         // Update DOM elements
-        var gaugeT = createTemperatureGauge();
-        var gaugeH = createHumidityGauge();
-        gaugeT.draw();
-        gaugeH.draw();
-        gaugeT.value = temperature;
-        gaugeH.value = humidity;
-        updateElement.innerHTML = epochToDateTime(timestamp);
+        var gaugeTT = createTemperaturaTanqueGauge();
+        var gaugeTC = createTemperaturaCaneriaGauge();
+        var gaugeNT = createNivelTanqueGauge();
+        var gaugePJ = createPresionJumoGauge();
+        var gaugePD = createPresionDeltaGauge();
+        var gaugeVB = createVelocidadBombaGauge();
+        var gaugePV = createPosicionValvulaGauge();
+        var gaugeC = createCaudalGauge();
+        gaugeTT.draw();
+        gaugeTC.draw();
+        gaugeNT.draw();
+        gaugePJ.draw();
+        gaugePD.draw();
+        gaugeVB.draw();
+        gaugePV.draw();
+        gaugeC.draw();
+        gaugeTT.value = temperaturaTanque;
+        gaugeTC.value = temperaturaCaneria;
+        gaugeNT.value = nivelTanque;
+        gaugePJ.value = presionJumo;
+        gaugePD.value = presionDelta;
+        gaugeVB.value = velocidadBomba;
+        gaugePV.value = posicionValvula;
+        gaugeC.value = caudal;
+        
       });
   
       // DELETE DATA
