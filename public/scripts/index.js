@@ -57,12 +57,9 @@ function epochToJsDate(epochTime){
   const toggleAutomaticoButton = document.getElementById('toggle-automatico');
   
   // DOM elements for sensor readings
-  const cardsReadingsElement = document.querySelector("#cards-div");
+  //const cardsReadingsElement = document.querySelector("#cards-div");
   const gaugesReadingsElement = document.querySelector("#gauges-div");
   const chartsDivElement = document.querySelector('#charts-div');
-  const tempElement = document.getElementById("temp");
-  const humElement = document.getElementById("hum");
-  const presElement = document.getElementById("pres");
   const updateElement = document.getElementById("lastUpdate")
 
   // MANAGE LOGIN/LOGOUT UI
@@ -80,48 +77,10 @@ function epochToJsDate(epochTime){
       console.log(uid);
   
       // Database paths (with user UID)
-      var dbPath = 'RDdata' ;
-      var chartPath = 'RDdata/Sensores';
+      var dbPath = 'RDdata/Sensores' ;
   
       // Database references
       var dbRef = firebase.database().ref(dbPath);
-      var chartRef = firebase.database().ref(chartPath);
-  
-      // CHARTS
-      // Number of readings to plot on charts
-      var chartRange = 0;
-      // Get number of readings to plot saved on database (runs when the page first loads and whenever there's a change in the database)
-      chartRef.on('value', snapshot =>{
-        chartRange = Number(snapshot.val());
-        console.log(chartRange);
-        // Delete all data from charts to update with new values when a new range is selected
-        chartT.destroy();
-        chartH.destroy();
-        chartP.destroy();
-        // Render new charts to display new range of data
-        chartT = createTemperatureChart();
-        chartH = createHumidityChart();
-        chartP = createPressureChart();
-        // Update the charts with the new range
-        // Get the latest readings and plot them on charts (the number of plotted readings corresponds to the chartRange value)
-        dbRef.orderByKey().limitToLast(chartRange).on('child_added', snapshot =>{
-          var jsonData = snapshot.toJSON(); // example: {temperature: 25.02, humidity: 50.20, pressure: 1008.48, timestamp:1641317355}
-          // Save values on variables
-          var temperature = jsonData.temperature;
-          var humidity = jsonData.humidity;
-          var pressure = jsonData.pressure;
-          var timestamp = jsonData.timestamp;
-          // Plot the values on the charts
-          plotValues(chartT, timestamp, temperature);
-          plotValues(chartH, timestamp, humidity);
-          plotValues(chartP, timestamp, pressure);
-        });
-      });
-  
-      // Update database with new range (input field)
-      chartsRangeInputElement.onchange = () =>{
-        chartRef.set(chartsRangeInputElement.value);
-      };
   
       //CHECKBOXES
       // Checbox (cards for sensor readings)
@@ -151,20 +110,6 @@ function epochToJsDate(epochTime){
           chartsDivElement.style.display = 'none';
         }
       });
-  
-      // CARDS
-      // Get the latest readings and display on cards
-      dbRef.orderByKey().limitToLast(1).on('child_added', snapshot =>{
-        var jsonData = snapshot.toJSON(); // example: {temperature: 25.02, humidity: 50.20, pressure: 1008.48, timestamp:1641317355}
-        var temperature = jsonData.TemperaturaTanque;
-        var humidity = jsonData.TemperaturaCaneria;
-        var pressure = jsonData.NivelTanque;
-        // Update DOM elements
-        tempElement.innerHTML = temperature;
-        humElement.innerHTML = humidity;
-        presElement.innerHTML = pressure;
-        updateElement.innerHTML = epochToDateTime(timestamp);
-      });
       
       //CONTROL REMOTO
       requestRemoteButton.addEventListener('click', () => {
@@ -177,9 +122,6 @@ function epochToJsDate(epochTime){
         var confirmarRemotoRef = firebase.database().ref('RDdata/ControlRemoto/Acceso_Remoto_NR');
         confirmarRemotoRef.on('value', (snapshot) => {
           if (snapshot.val() === 1) {
-            // Escribe 1 en la variable accesoRemoto en Firebase
-            //var accesoRemotoRef = firebase.database().ref('RDdata/ControlRemoto/Acceso_Remoto_NR');
-            //accesoRemotoRef.set(1);
             // Escribe 0 en la variable solicitudRemoto en Firebase
             var solicitudRemotoRef = firebase.database().ref('RDdata/ControlRemoto/Solicitud_Remoto_NR');
             solicitudRemotoRef.set(0);
@@ -269,16 +211,16 @@ function epochToJsDate(epochTime){
 
       // GAUGES
       // Get the latest readings and display on gauges
-      dbRef.orderByKey().limitToLast(1).on('child_added', snapshot =>{
-        var jsonData = snapshot.toJSON();
-        var temperaturaTanque = jsonData.TemperaturaTanque;
-        var temperaturaCaneria = jsonData.TemperaturaCaneria;
-        var presionJumo = jsonData.PresionJumo;
-        var presionDelta = jsonData.PresionDelta;
-        var velocidadBomba = jsonData.LecturaVelocidadBomba;
-        var lecturaValvula = jsonData.LecturaValvula;
-        var nivelTanque = jsonData.NivelTanque;
-        var caudal = jsonData.Caudal;
+      dbRef.on('value', snapshot =>{
+        var data = snapshot.val();
+        var temperaturaTanque = data.TemperaturaTanque;
+        var temperaturaCaneria = data.TemperaturaCaneria;
+        var presionJumo = data.PresionJumo;
+        var presionDelta = data.PresionDelta;
+        var velocidadBomba = data.LecturaVelocidadBomba;
+        var lecturaValvula = data.LecturaValvula;
+        var nivelTanque = data.NivelTanque;
+        var caudal = data.Caudal;
         // Update DOM elements
         var gaugeTT = createTemperaturaTanqueGauge();
         var gaugeTC = createTemperaturaCaneriaGauge();
@@ -299,92 +241,6 @@ function epochToJsDate(epochTime){
         gaugeLevel.setAttribute('value',nivelTanque);
         gaugeFlow.setAttribute('value',caudal);
       });
-      
-      // DELETE DATA
-      // Add event listener to open modal when click on "Delete Data" button
-      deleteButtonElement.addEventListener('click', e =>{
-        console.log("Remove data");
-        e.preventDefault;
-        deleteModalElement.style.display="block";
-      });
-  
-      // Add event listener when delete form is submited
-      deleteDataFormElement.addEventListener('submit', (e) => {
-        // delete data (readings)
-        dbRef.remove();
-      });
-  
-      // TABLE
-      var lastReadingTimestamp; //saves last timestamp displayed on the table
-      // Function that creates the table with the first 100 readings
-      function createTable(){
-        // append all data to the table
-        var firstRun = true;
-        dbRef.orderByKey().limitToLast(100).on('child_added', function(snapshot) {
-          if (snapshot.exists()) {
-            var jsonData = snapshot.toJSON();
-            console.log(jsonData);
-            var temperature = jsonData.temperature;
-            var humidity = jsonData.humidity;
-            var pressure = jsonData.pressure;
-            var timestamp = jsonData.timestamp;
-            var content = '';
-            content += '<tr>';
-            content += '<td>' + epochToDateTime(timestamp) + '</td>';
-            content += '<td>' + temperature + '</td>';
-            content += '<td>' + humidity + '</td>';
-            content += '<td>' + pressure + '</td>';
-            content += '</tr>';
-            $('#tbody').prepend(content);
-            // Save lastReadingTimestamp --> corresponds to the first timestamp on the returned snapshot data
-            if (firstRun){
-              lastReadingTimestamp = timestamp;
-              firstRun=false;
-              console.log(lastReadingTimestamp);
-            }
-          }
-        });
-      };
-  
-      // append readings to table (after pressing More results... button)
-      function appendToTable(){
-        var dataList = []; // saves list of readings returned by the snapshot (oldest-->newest)
-        var reversedList = []; // the same as previous, but reversed (newest--> oldest)
-        console.log("APEND");
-        dbRef.orderByKey().limitToLast(100).endAt(lastReadingTimestamp).once('value', function(snapshot) {
-          // convert the snapshot to JSON
-          if (snapshot.exists()) {
-            snapshot.forEach(element => {
-              var jsonData = element.toJSON();
-              dataList.push(jsonData); // create a list with all data
-            });
-            lastReadingTimestamp = dataList[0].timestamp; //oldest timestamp corresponds to the first on the list (oldest --> newest)
-            reversedList = dataList.reverse(); // reverse the order of the list (newest data --> oldest data)
-  
-            var firstTime = true;
-            // loop through all elements of the list and append to table (newest elements first)
-            reversedList.forEach(element =>{
-              if (firstTime){ // ignore first reading (it's already on the table from the previous query)
-                firstTime = false;
-              }
-              else{
-                var temperature = element.temperature;
-                var humidity = element.humidity;
-                var pressure = element.pressure;
-                var timestamp = element.timestamp;
-                var content = '';
-                content += '<tr>';
-                content += '<td>' + epochToDateTime(timestamp) + '</td>';
-                content += '<td>' + temperature + '</td>';
-                content += '<td>' + humidity + '</td>';
-                content += '<td>' + pressure + '</td>';
-                content += '</tr>';
-                $('#tbody').append(content);
-              }
-            });
-          }
-        });
-      }
   
       viewDataButtonElement.addEventListener('click', (e) =>{
         // Toggle DOM elements
