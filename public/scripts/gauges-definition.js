@@ -106,53 +106,7 @@ function createTemperaturaCaneriaGauge() {
     });
     return gauge;
 }
-// Create Nivel Tanque Gauge
-function createNivelTanqueGauge() {
-    var gauge = new LinearGauge({
-        renderTo: 'gauge-nivel-tanque',
-        width: 120,
-        height: 400,
-        units: "Nivel Tanque %",
-        minValue: 0,
-        maxValue: 100,
-        majorTicks: [
-            "0",
-            "10",
-            "20",
-            "30",
-            "40",
-            "50",
-            "60",
-            "70",
-            "80",
-            "90",
-            "100"
-        ],
-        minorTicks: 2,
-        strokeTicks: true,
-        highlights: [
-            {
-                "from": 90,
-                "to": 100,
-                "color": "rgba(200, 50, 50, .75)"
-            }
-        ],
-        colorPlate: "#fff",
-        borderShadowWidth: 0,
-        borders: false,
-        needleType: "arrow",
-        needleWidth: 2,
-        animationDuration: 1500,
-        animationRule: "linear",
-        tickSide: "left",
-        numberSide: "left",
-        needleSide: "left",
-        barStrokeWidth: 7,
-        barBeginCircle: false,
-        value: 75
-    });
-    return gauge;
-}
+
 // Create Presion Jumo
 function createPresionJumoGauge(){
     var gauge = new RadialGauge({
@@ -316,86 +270,6 @@ function createVelocidadBombaGauge(){
         valueBoxBorderRadius: 0,
         colorValueBoxRect: "#222",
         colorValueBoxRectEnd: "#333"
-    });
-    return gauge;
-}
-// Create Posicion Valvula Gauge
-function createPosicionValvulaGauge() {
-    var gauge = new LinearGauge({
-        renderTo: 'gauge-posicion-valvula',
-        width: 120,
-        height: 400,
-        units: "Valvula %",
-        minValue: 0,
-        maxValue: 100,
-        majorTicks: [
-            "0",
-            "10",
-            "20",
-            "30",
-            "40",
-            "50",
-            "60",
-            "70",
-            "80",
-            "90",
-            "100"
-        ],
-        minorTicks: 2,
-        strokeTicks: true,
-        highlights: [
-            {
-                "from": 0,
-                "to": 100,
-                "color": "rgba(255, 0, 0, .3)"
-            }
-        ],
-        colorPlate: "#fff",
-        borderShadowWidth: 0,
-        borders: false,
-        needleType: "arrow",
-        needleWidth: 2,
-        animationDuration: 1500,
-        animationRule: "linear",
-        tickSide: "left",
-        numberSide: "left",
-        needleSide: "left",
-        barStrokeWidth: 7,
-        barBeginCircle: false,
-        value: 75
-    });
-    return gauge;
-}
-// Create Caudal
-function createCaudalGauge(){
-    var gauge = new LinearGauge({
-        renderTo: 'gauge-caudal',
-        width: 120,
-        height: 400,
-        units: "Caudal L/min",
-        minValue: 0,
-        maxValue: 30,
-        majorTicks: [
-            "0",
-            "10",
-            "20",
-            "30"
-        ],
-        minorTicks: 2,
-        strokeTicks: true,
-        colorPlate: "#fff",
-        borderShadowWidth: 0,
-        borders: false,
-        needleType: "arrow",
-        needleWidth: 2,
-        animationDuration: 1500,
-        animationRule: "linear",
-        tickSide: "left",
-        numberSide: "left",
-        needleSide: "left",
-        barStrokeWidth: 7,
-        barBeginCircle: false,
-        value: 75
     });
     return gauge;
 }

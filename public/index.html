@@ -91,34 +91,96 @@
           <!--ESTADO-->
           <div class="card">
             <p><i class="fas fa-thermometer-half" style="color:#059e8a;"></i> ESTADO </p>
-            <p><span class="reading"><span id="estado"></span> &deg;C</span></p>
+            <p><span class="reading"><span id="temp"></span> &deg;C</span></p>
           </div>
           <!--MODO DE OPERACION-->
           <div class="card">
             <p><i class="fas fa-tint" style="color:#00add6;"></i> MODO DE OPERACION</p>
-            <p><span class="reading"><span id="modo"></span> &percnt;</span></p>
+            <p><span class="reading"><span id="hum"></span> &percnt;</span></p>
           </div>
           <!--SOLICITUD ACCESO REMOTO-->
           <div class="card">
             <p><i class="fas fa-angle-double-down" style="color:#e1e437;"></i> ACCESO REMOTO</p>
-            <p><span class="reading"><span id="acceso"></span> hPa</span></p>
+            <p><span class="reading"><span id="pres"></span> hPa</span></p>
           </div>
         </div>
       </div>
       <!--GAUGES-->
       <div id ="gauges-div">
         <div class="cards">
-          <!--TEMPERATURA TANQUE-->
+          <!--NIVEL TANQUE-->
           <div class="card">
-            <canvas id="gauge-temperatura-tanque"></canvas>
+            
           </div>
-          <!--TEMPERATURA CANERIA-->
+          <!--CAUDAL-->
           <div class="card">
-            <canvas id="gauge-temperatura-caneria"></canvas>
+            <rockiot-ui 
+              id="gauge-caudal"
+              type="gauge"
+              variation="radial"
+              orientation="vertical"
+              serial="radial_base" 
+              name="Caudal" 
+              value="45" 
+              units="L/min" 
+              min="0" 
+              max="30" 
+              precision="1" 
+              animation="500" 
+              svgwidth="250" 
+              svgheight="250" 
+              text-color="#777" 
+              value-color="#777" 
+              value-bg="transparent" 
+              value-border="0px solid #fac83c" 
+              control-color="#cecece" 
+              control-bg="none" 
+              auto-test="1" 
+              startangle="135" 
+              endangle="45" 
+              radius="lg" 
+              size="lg" 
+              scale="0" 
+              smallscale="0" 
+              ticks="10" 
+              needle="0" 
+              bar-color="#444" 
+              progress-color="#00ff00" 
+              scale-color="#aaa" 
+              scale-text-color="#111" 
+              needle-color="#777" 
+              needle-stroke="#000" 
+            ></rockiot-ui>
           </div>
           <!--NIVEL TANQUE-->
           <div class="card">
-            <canvas id="gauge-nivel-tanque"></canvas>
+            <rockiot-ui 
+              id="gauge-nivel-tanque"
+              type="gauge"
+              variation="level"
+              orientation="vertical"
+              serial="level_0" 
+              name="Nivel Tanque" 
+              value="10" 
+              units="%" 
+              min="0" 
+              max="100" 
+              precision="1" 
+              animation="500" 
+              svgwidth="300" 
+              svgheight="300" 
+              text-color="#777" 
+              value-color="#777" 
+              value-bg="transparent" 
+              value-border="0px solid #fac83c" 
+              control-color="#cecece" 
+              control-bg="none" 
+              auto-test="1" 
+              progress-color="#4ea5f1" 
+              bar-color="#444" 
+              bar-border-color="#000" 
+              auto-color="0" 
+            ></rockiot-ui>
           </div>
           <!--PRESION JUMO-->
           <div class="card">
@@ -128,21 +190,90 @@
           <div class="card">
             <canvas id="gauge-presion-delta"></canvas>
           </div>
-          <!--PRESION BOMBA-->
+          <!--VELOCIDAD BOMBA-->
           <div class="card">
             <canvas id="gauge-bomba"></canvas>
           </div>
           <!--POSICION VALVULA-->
           <div class="card">
-            <canvas id="gauge-posicion-valvula"></canvas>
+            <rockiot-ui 
+              id="guage-posicion-valvula"
+              type="gauge"
+              variation="linear"
+              orientation="vertical"
+              serial="linear_3" 
+              name="Posicion Valvula" 
+              value="35" 
+              units="%" 
+              min="0"
+              max="100"
+              precision="1" 
+              animation="500" 
+              svgwidth="300" 
+              svgheight="300" 
+              text-color="#333" 
+              value-color="#777" 
+              value-bg="transparent" 
+              value-border="0px solid #fac83c" 
+              control-color="#888" 
+              control-bg="none" 
+              auto-test="1" 
+              orientation="vertical" 
+              size="md" 
+              scale="1" 
+              smallscale="1" 
+              ticks="10" 
+              needle="1" 
+              bar-color="#111" 
+              progress-color="#4ea5f1" 
+              scale-color="#aaa" 
+              scale-text-color="#333" 
+              needle-color="#ff8800" 
+              needle-stroke="#000" 
+              zones="#00ff00,#ff8800,#ff0000" 
+            ></rockiot-ui>
           </div>
-          <!--CAUDAL-->
+          <!--TEMPERATURA TANQUE-->
           <div class="card">
-            <canvas id="gauge-caudal"></canvas>
+            <canvas id="gauge-temperatura-tanque"></canvas>
+          </div>
+          <!--TEMPERATURA CANERIA-->
+          <div class="card">
+            <canvas id="gauge-temperatura-caneria"></canvas>
           </div>
         </div>
       </div>
-
+      
+      <!--CONTROL REMOTO-->
+      <div id="remote-control">
+        <button id="request-remote-button">Solicitar Control Remoto</button>
+        <div id="waiting-confirmation" style="display:none;">
+          Esperando confirmación...
+        </div>
+        <div id="remote-control-menu" style="display:none;">
+          <div id="manual-control" style="display:none;">
+            <label for="setMTempTanque">Set Temperatura Tanque</label>
+            <input type="number" id="setMTempTanque" name="setMTempTanque" value="0">
+            <label for="setMPosValv">Set Posicion Valvula</label>
+            <input type="number" id="setMPosValv" name="setMPosValv " value="0">
+            <label for="setMVelBom">Set Velocidad Bomba</label>
+            <input type="number" id="setMVelBom" name="setMVelBom" value="0">
+            <button class="on-off-button" id="toggle-manual-bomba">On/Off Bomba</button>
+            <button class="on-off-button" id="toggle-manual-calentador">On/Off Calentador</button>
+          </div>
+          <div id="automatic-control" style="display:none;">
+            <label for="setATempTanque">Set Temperatura Tanque</label>
+            <input type="number" id="setATempTanque" name="setATempTanque" value="0">
+            <label for="setAPresion">Set Presion</label>
+            <input type="number" id="setAPresion" name="setAPresion" value="0">
+            <button class="on-off-button" id="toggle-automatico">On/Off Automático</button>
+          </div>
+          <p>
+            <button id="confirm-settings-button">Confirmar Parametros</button>
+            <button id="close-remote-button">Cerrar Conexión Remota</button>
+          </p>
+        </div>
+      </div>
       <!--CHARTS-->
       <div id="charts-div" style="display:none">
         <!--SET NUMBER OF READINGS INPUT FIELD-->

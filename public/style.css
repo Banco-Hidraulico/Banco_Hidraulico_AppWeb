@@ -130,6 +130,20 @@ th {
 }
 
 /* The Modal (background) */
+label {
+    font-weight: bold;
+    display: block;
+    margin: 10px 0 5px;
+}
+
+input[type="number"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
 .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
@@ -185,4 +199,101 @@ hr {
     .cancelbtn, .deletebtn {
         width: 100%;
     }
+}
+/* Estilos para el control remoto */
+#remote-control {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+#remote-control button {
+    width: 100%;
+}
+
+#waiting-confirmation {
+    background-color: #ffcc00;
+    color: #333;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    margin: 10px 0;
+}
+
+#remote-control-menu {
+    display: flex;
+    flex-direction: column;
+}
+
+#remote-control-menu > div {
+    margin-bottom: 20px;
+}
+
+#manual-control, #automatic-control {
+    display: none;
+}
+
+/* Estilos para los botones dentro del menú */
+#confirm-settings-button {
+    background-color: #28a745;
+}
+
+#confirm-settings-button:hover {
+    background-color: #218838;
+}
+
+#close-remote-button {
+    background-color: #dc3545;
+}
+
+#close-remote-button:hover {
+    background-color: #c82333;
+}
+/* Botones on-off */
+.on-off-button {
+    background-color: #17a2b8;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.on-off-button.on {
+    background-color: #28a745;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.on-off-button.off {
+    background-color: #dc3545;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.on-off-button.on:hover {
+    background-color: #218838;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.on-off-button.off:hover {
+    background-color: #c82333;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
 }
