@@ -90,9 +90,21 @@
       <!--GAUGES-->
       <div id ="gauges-div">
         <div class="cards">
-          <!--NIVEL TANQUE-->
+          <!--PARAMETROS-->
           <div class="card">
-            
+            <label><i class="fas fa-thermometer-half" style="color:#059e8a;"></i> MODO DE OPERACION</label>
+              <p><span class="reading"><span id="modo"></p>
+            <div id="manual-set" style="display:none;">
+              <label><i class="fas fa-thermometer-half" style="color:#059e8a;"></i> SETEOS MANUALES </label>
+                <p>Temperatura Tanque: <span class="reading"><span id="smtt"></span> &deg;C</span></p>
+                <p>Posicion Valvula: <span class="reading"><span id="smpv"></span> %</span></p>
+                <p>Velocidad Bomba: <span class="reading"><span id="smvb"></span> %</span></p>
+            </div>
+            <div id="automatic-set" style="display:none;">
+              <label><i class="fas fa-thermometer-half" style="color:#059e8a;"></i> SETEOS AUTOMATICOS </label>
+                <p>Temperatura Tanque: <span class="reading"><span id="smtt"></span> &deg;C</span></p>
+                <p>Presion: <span class="reading"><span id="smpv"></span> PSI</span></p>
+            </div>
           </div>
           <!--CAUDAL-->
           <div class="card">
