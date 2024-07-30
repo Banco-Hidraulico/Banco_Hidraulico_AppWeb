@@ -147,11 +147,11 @@ const setupUI = (user) => {
           var modoOperacionRef = firebase.database().ref('RDdata/ControlRemoto/Modo_Operacion_NR');
           modoOperacionRef.once('value', (snapshot) => {
             var modoOperacion = snapshot.val();
-            if (modoOperacion === 'manual') {
+            if (modoOperacion === 'Manual') {
               manualControlElement.style.display = 'block';
               automaticControlElement.style.display = 'none';
             } 
-            else if (modoOperacion === 'automatico') {
+            else if (modoOperacion === 'Automatico') {
               manualControlElement.style.display = 'none';
               automaticControlElement.style.display = 'block';
             }
@@ -199,12 +199,12 @@ const setupUI = (user) => {
       button.classList.toggle('on');
       button.classList.toggle('off');
       let newValue = button.classList.contains('on') ? 1 : 0;
-      dbRef.child(variable).set(newValue);
+      dbRem.child(variable).set(newValue);
     }
 
     // Inicializar estado botones on-off
     function initializeToggleButton(button, variable) {
-      dbRef.child(variable).on('value', snapshot => {
+      dbRem.child(variable).on('value', snapshot => {
         if (snapshot.val() === 1) {
           button.classList.add('on');
           button.classList.remove('off');
@@ -220,9 +220,9 @@ const setupUI = (user) => {
     }
 
     // Inicializar botones on-off
-    initializeToggleButton(toggleManualBombaButton, 'ControlRemoto/Star_M_Bomba_NR');
-    initializeToggleButton(toggleManualCalentadorButton, 'ControlRemoto/Star_M_Calentador_NR');
-    initializeToggleButton(toggleAutomaticoButton, 'ControlRemoto/Star_A_NR');
+    initializeToggleButton(toggleManualBombaButton, 'Star_M_Bomba_NR');
+    initializeToggleButton(toggleManualCalentadorButton, 'Star_M_Calentador_NR');
+    initializeToggleButton(toggleAutomaticoButton, 'Conf_Arranque_Automatico');
 
     // GAUGES
     // Get the latest readings and display on gauges
@@ -267,11 +267,11 @@ const setupUI = (user) => {
       var data = snapshot.val();
       var modoOperacion = data.Modo_Operacion_NR;
       modoElement.innerHTML = modoOperacion;
-      if (modoOperacion === 'manual') {
+      if (modoOperacion === 'Manual') {
         manualSetElement.style.display = 'block';
         automaticSetElement.style.display = 'none';
       } 
-      else if (modoOperacion === 'automatico') {
+      else if (modoOperacion === 'Automatico') {
         manualSetElement.style.display = 'none';
         automaticSetElement.style.display = 'block';
       }
