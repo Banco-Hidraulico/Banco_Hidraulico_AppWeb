@@ -138,7 +138,7 @@ function createPresionJumoGauge(){
             {
                 "from": 6,
                 "to": 8,
-                "color": "#03C0C1"
+                "color": "rgba(200, 50, 50, .75)"
             }
         ],
         colorPlate: "#fff",
@@ -188,7 +188,7 @@ function createPresionDeltaGauge(){
             {
                 "from": 6,
                 "to": 8,
-                "color": "#03C0C1"
+                "color": "rgba(200, 50, 50, .75)"
             }
         ],
         colorPlate: "#fff",

@@ -40,6 +40,18 @@ body {
 .reading {
     color: #193036;
 }
+.reading-modo{
+    color: #193036;
+    font-size: 1.2rem;
+}
+.Lectura{
+    color: #193036;
+    font-size: 0.9rem;
+    text-align: left;
+}
+.items{
+    text-align: left;
+}
 
 .date-time{
     font-size: 0.8rem;
@@ -238,11 +250,11 @@ hr {
 
 /* Estilos para los botones dentro del menú */
 #confirm-settings-button {
-    background-color: #28a745;
+    background-color: #17a2b8;
 }
 
 #confirm-settings-button:hover {
-    background-color: #218838;
+    background-color: #1392a5;
 }
 
 #close-remote-button {

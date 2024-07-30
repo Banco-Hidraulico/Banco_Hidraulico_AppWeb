@@ -31,6 +31,11 @@
       const auth = firebase.auth();
       const db = firebase.database();
 
+      function resetdb(){
+      var solicitudRemotoRef = firebase.database().ref('RDdata/ControlRemoto/Acceso_Remoto_NR');
+      solicitudRemotoRef.set(0);
+      
+    }
     </script>
 
     <!-- include highchartsjs to build the charts-->
@@ -55,7 +60,7 @@
 
   </head>
 
-  <body>
+  <body onload="resetdb()">
 
     <!--TOP BAR-->
     <div class="topnav">
@@ -82,7 +87,7 @@
       <!--LAST UPDATE-->
       <p><span class ="date-time">Last update: <span id="lastUpdate"></span></span></p>
       <p>
-        Parametros: <input type="checkbox" id="cards-checkbox" name="cards-checkbox" checked>
+        Remoto: <input type="checkbox" id="cards-checkbox" name="cards-checkbox" checked>
         Indicadores: <input type="checkbox" id="gauges-checkbox" name="gauges-checkbox" checked>
         Graficos: <input type="checkbox" id="charts-checkbox" name="charts-checkbox" unchecked>
       </p>
@@ -92,18 +97,17 @@
         <div class="cards">
           <!--PARAMETROS-->
           <div class="card">
-            <label><i class="fas fa-thermometer-half" style="color:#059e8a;"></i> MODO DE OPERACION</label>
-              <p><span class="reading"><span id="modo"></p>
+            <label class="items">MODO DE OPERACION</label>
+              <p><span class="reading-modo"><span id="modo"></p>
+            <label class="items"><i class="fas fa-angle-double-down" style="color:#e1e437;"></i> Seteos</label>
+            <p class="Lectura">Temperatura Tanque: <span class="reading"><span id="smtt"></span> &deg;C</span></p>
             <div id="manual-set" style="display:none;">
-              <label><i class="fas fa-thermometer-half" style="color:#059e8a;"></i> SETEOS MANUALES </label>
-                <p>Temperatura Tanque: <span class="reading"><span id="smtt"></span> &deg;C</span></p>
-                <p>Posicion Valvula: <span class="reading"><span id="smpv"></span> %</span></p>
-                <p>Velocidad Bomba: <span class="reading"><span id="smvb"></span> %</span></p>
+              
+              <p class="Lectura">Posicion Valvula: <span class="reading"><span id="smpv"></span> %</span></p>
+              <p class="Lectura">Velocidad Bomba: <span class="reading"><span id="smvb"></span> %</span></p>
             </div>
             <div id="automatic-set" style="display:none;">
-              <label><i class="fas fa-thermometer-half" style="color:#059e8a;"></i> SETEOS AUTOMATICOS </label>
-                <p>Temperatura Tanque: <span class="reading"><span id="smtt"></span> &deg;C</span></p>
-                <p>Presion: <span class="reading"><span id="smpv"></span> PSI</span></p>
+              <p class="Lectura">Presion: <span class="reading"><span id="sape"></span> PSI</span></p>
             </div>
           </div>
           <!--CAUDAL-->
@@ -139,7 +143,7 @@
               ticks="10" 
               needle="0" 
               bar-color="#444" 
-              progress-color="#00ff00" 
+              progress-color="#4ea5f1" 
               scale-color="#aaa" 
               scale-text-color="#111" 
               needle-color="#777" 
@@ -219,12 +223,12 @@
               ticks="10" 
               needle="1" 
               bar-color="#111" 
-              progress-color="#4ea5f1" 
+              progress-color="#ff8000" 
               scale-color="#aaa" 
               scale-text-color="#333" 
               needle-color="#ff8800" 
               needle-stroke="#000" 
-              zones="#00ff00,#ff8800,#ff0000" 
+              zones="" 
             ></rockiot-ui>
           </div>
           <!--TEMPERATURA TANQUE-->
@@ -237,35 +241,36 @@
           </div>
         </div>
       </div>
-      
       <!--CONTROL REMOTO-->
-      <div id="remote-control">
-        <button id="request-remote-button">Solicitar Control Remoto</button>
-        <div id="waiting-confirmation" style="display:none;">
-          Esperando confirmación...
-        </div>
-        <div id="remote-control-menu" style="display:none;">
-          <div id="manual-control" style="display:none;">
-            <label for="setMTempTanque">Set Temperatura Tanque</label>
-            <input type="number" id="setMTempTanque" name="setMTempTanque" value="0">
-            <label for="setMPosValv">Set Posicion Valvula</label>
-            <input type="number" id="setMPosValv" name="setMPosValv " value="0">
-            <label for="setMVelBom">Set Velocidad Bomba</label>
-            <input type="number" id="setMVelBom" name="setMVelBom" value="0">
-            <button class="on-off-button" id="toggle-manual-bomba">On/Off Bomba</button>
-            <button class="on-off-button" id="toggle-manual-calentador">On/Off Calentador</button>
+      <div id ="cards-div"></div>
+        <div id="remote-control">
+          <button id="request-remote-button">Solicitar Control Remoto</button>
+          <div id="waiting-confirmation" style="display:none;">
+            Esperando confirmación...
           </div>
-          <div id="automatic-control" style="display:none;">
-            <label for="setATempTanque">Set Temperatura Tanque</label>
-            <input type="number" id="setATempTanque" name="setATempTanque" value="0">
-            <label for="setAPresion">Set Presion</label>
-            <input type="number" id="setAPresion" name="setAPresion" value="0">
-            <button class="on-off-button" id="toggle-automatico">On/Off Automático</button>
+          <div id="remote-control-menu" style="display:none;">
+            <div id="manual-control" style="display:none;">
+              <label for="setMTempTanque">Set Temperatura Tanque</label>
+              <input type="number" id="setMTempTanque" name="setMTempTanque" value="0">
+              <label for="setMPosValv">Set Posicion Valvula</label>
+              <input type="number" id="setMPosValv" name="setMPosValv " value="0">
+              <label for="setMVelBom">Set Velocidad Bomba</label>
+              <input type="number" id="setMVelBom" name="setMVelBom" value="0">
+              <button class="on-off-button" id="toggle-manual-bomba">On/Off Bomba</button>
+              <button class="on-off-button" id="toggle-manual-calentador">On/Off Calentador</button>
+            </div>
+            <div id="automatic-control" style="display:none;">
+              <label for="setATempTanque">Set Temperatura Tanque</label>
+              <input type="number" id="setATempTanque" name="setATempTanque" value="0">
+              <label for="setAPresion">Set Presion</label>
+              <input type="number" id="setAPresion" name="setAPresion" value="0">
+              <button class="on-off-button" id="toggle-automatico">On/Off Automático</button>
+            </div>
+            <p>
+              <button id="confirm-settings-button">Confirmar Parametros</button>
+              <button id="close-remote-button">Cerrar Conexión Remota</button>
+            </p>
           </div>
-          <p>
-            <button id="confirm-settings-button">Confirmar Parametros</button>
-            <button id="close-remote-button">Cerrar Conexión Remota</button>
-          </p>
         </div>
       </div>
     </div>

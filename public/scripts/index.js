@@ -34,12 +34,6 @@ const userDetailsElement = document.querySelector('#user-details');
 const authBarElement = document.querySelector('#authentication-bar');
 const deleteButtonElement = document.getElementById('delete-button');
 const deleteModalElement = document.getElementById('delete-modal');
-const deleteDataFormElement = document.querySelector('#delete-data-form');
-const viewDataButtonElement = document.getElementById('view-data-button');
-const hideDataButtonElement = document.getElementById('hide-data-button');
-const tableContainerElement = document.querySelector('#table-container');
-const chartsRangeInputElement = document.getElementById('charts-range');
-const loadDataButtonElement = document.getElementById('load-data');
 const cardsCheckboxElement = document.querySelector('input[name=cards-checkbox]');
 const gaugesCheckboxElement = document.querySelector('input[name=gauges-checkbox]');
 const chartsCheckboxElement = document.querySelector('input[name=charts-checkbox]');
@@ -71,6 +65,13 @@ const gaugesReadingsElement = document.querySelector("#gauges-div");
 const chartsDivElement = document.querySelector('#charts-div');
 const updateElement = document.getElementById("lastUpdate")
 
+// CREATE GAUGE
+var gaugeTT = createTemperaturaTanqueGauge();
+var gaugeTC = createTemperaturaCaneriaGauge();
+var gaugePJ = createPresionJumoGauge();
+var gaugePD = createPresionDeltaGauge();
+var gaugeVB = createVelocidadBombaGauge();
+
 // MANAGE LOGIN/LOGOUT UI
 const setupUI = (user) => {
   if (user) {
@@ -86,13 +87,16 @@ const setupUI = (user) => {
     console.log(uid);
 
     // Database paths (with user UID)
-    var dbPath = 'RDdata/Sensores' ;
-    //var dbPathRem = 'RDdata/ControlRemoto';
-  
+    const dbPath = 'RDdata/Sensores' ;
+    const dbPathRem = 'RDdata/ControlRemoto';
+    const dbPathSet = 'RDdata/Seteos';
+
     // Database references
     var dbRef = firebase.database().ref(dbPath);
-    //var dbPathRem = firebase.database().ref(dbPathRem);
-  
+    var dbRem = firebase.database().ref(dbPathRem);
+    var dbSet = firebase.database().ref(dbPathSet);
+    
+
     //CHECKBOXES
     // Checbox (cards for sensor readings)
     cardsCheckboxElement.addEventListener('change', (e) =>{
@@ -221,19 +225,6 @@ const setupUI = (user) => {
     initializeToggleButton(toggleAutomaticoButton, 'ControlRemoto/Star_A_NR');
 
     // GAUGES
-    var modoOperacionRef = firebase.database().ref('RDdata/ControlRemoto/Modo_Operacion_NR');
-          modoOperacionRef.once('value', (snapshot) => {
-            var modoOperacion = snapshot.val();
-            modoElement.innerHTML = modoOperacion;
-            if (modoOperacion === 'manual') {
-              manualSetElement.style.display = 'block';
-              automaticSetElement.style.display = 'none';
-            } 
-            else if (modoOperacion === 'automatico') {
-              manualSetElement.style.display = 'none';
-              automaticSetElement.style.display = 'block';
-            }
-          });
     // Get the latest readings and display on gauges
     dbRef.on('value', snapshot =>{
       var data = snapshot.val();
@@ -245,16 +236,7 @@ const setupUI = (user) => {
       var lecturaValvula = data.LecturaValvula;
       var nivelTanque = data.NivelTanque;
       var caudal = data.Caudal;
-      var smtt = data.SetTemperaturaTanque;
-      var smpv = data.SetPosicionValvula;
-      var smvb = data.SetVelocidadBomba;
-      var sape = data.SetPresion;
       // Update DOM elements
-      var gaugeTT = createTemperaturaTanqueGauge();
-      var gaugeTC = createTemperaturaCaneriaGauge();
-      var gaugePJ = createPresionJumoGauge();
-      var gaugePD = createPresionDeltaGauge();
-      var gaugeVB = createVelocidadBombaGauge();
       gaugeTT.draw();
       gaugeTC.draw();
       gaugePJ.draw();
@@ -268,32 +250,32 @@ const setupUI = (user) => {
       gaugePosition.setAttribute('value',lecturaValvula);
       gaugeLevel.setAttribute('value',nivelTanque);
       gaugeFlow.setAttribute('value',caudal);
+      
+    });
+    dbSet.on('value',snapshot=>{
+      var data=snapshot.val();
+      var smtt = data.SetTemperaturaTanque;
+      var smpv = data.SetPosicionValvula;
+      var smvb = data.SetVelocidadBomba;
+      var sape = data.Set_Presion_Delta;
       smttElement.innerHTML = smtt;
-      smpvElement.innerHTML = smpv;
+      smpvElement.innerHTML = smpv*0.00390625;
       smvbElement.innerHTML = smvb;
-      sattElement.innerHTML = smtt;
       sapeElement.innerHTML = sape;
     });
-  
-    viewDataButtonElement.addEventListener('click', (e) =>{
-      // Toggle DOM elements
-      tableContainerElement.style.display = 'block';
-      viewDataButtonElement.style.display ='none';
-      hideDataButtonElement.style.display ='inline-block';
-      loadDataButtonElement.style.display = 'inline-block'
-      createTable();
+    dbRem.on('value', snapshot =>{
+      var data = snapshot.val();
+      var modoOperacion = data.Modo_Operacion_NR;
+      modoElement.innerHTML = modoOperacion;
+      if (modoOperacion === 'manual') {
+        manualSetElement.style.display = 'block';
+        automaticSetElement.style.display = 'none';
+      } 
+      else if (modoOperacion === 'automatico') {
+        manualSetElement.style.display = 'none';
+        automaticSetElement.style.display = 'block';
+      }
     });
-  
-    loadDataButtonElement.addEventListener('click', (e) => {
-      appendToTable();
-    });
-  
-    hideDataButtonElement.addEventListener('click', (e) => {
-      tableContainerElement.style.display = 'none';
-      viewDataButtonElement.style.display = 'inline-block';
-      hideDataButtonElement.style.display = 'none';
-    });
-  
     // Agregar configuración para control remoto
     requestRemoteButton.style.display = 'block';
     closeRemoteButton.addEventListener('click', (e) => {
