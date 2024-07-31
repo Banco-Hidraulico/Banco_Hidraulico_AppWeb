@@ -87,68 +87,156 @@
       <!--LAST UPDATE-->
       <p><span class ="date-time">Last update: <span id="lastUpdate"></span></span></p>
       <p>
-        Cards: <input type="checkbox" id="cards-checkbox" name="cards-checkbox" checked>
-        Gauges: <input type="checkbox" id="gauges-checkbox" name="gauges-checkbox" checked>
-        Charts: <input type="checkbox" id="charts-checkbox" name="charts-checkbox" unchecked>
+        Remoto: <input type="checkbox" id="cards-checkbox" name="cards-checkbox" checked>
+        Indicadores: <input type="checkbox" id="gauges-checkbox" name="gauges-checkbox" checked>
+        Graficos: <input type="checkbox" id="charts-checkbox" name="charts-checkbox" unchecked>
       </p>
-      <div id="cards-div">
-        <div class="cards">
-          <!--TEMPERATURE-->
-          <div class="card">
-            <p><i class="fas fa-thermometer-half" style="color:#059e8a;"></i> TEMPERATURE</p>
-            <p><span class="reading"><span id="temp"></span> &deg;C</span></p>
-          </div>
-          <!--HUMIDITY-->
-          <div class="card">
-            <p><i class="fas fa-tint" style="color:#00add6;"></i> HUMIDITY</p>
-            <p><span class="reading"><span id="hum"></span> &percnt;</span></p>
-          </div>
-          <!--PRESSURE-->
-          <div class="card">
-            <p><i class="fas fa-angle-double-down" style="color:#e1e437;"></i> PRESSURE</p>
-            <p><span class="reading"><span id="pres"></span> hPa</span></p>
-          </div>
-        </div>
-      </div>
+      
       <!--GAUGES-->
       <div id ="gauges-div">
         <div class="cards">
-          <!--TEMPERATURE-->
+          <!--PARAMETROS-->
           <div class="card">
-            <canvas id="gauge-temperature"></canvas>
+            <label class="items">MODO DE OPERACION</label>
+              <p><span class="reading-modo"><span id="modo"></p>
+            <label class="items"><i class="fas fa-angle-double-down" style="color:#e1e437;"></i> Seteos</label>
+            <p class="Lectura">Temperatura Tanque: <span class="reading"><span id="smtt"></span> &deg;C</span></p>
+            <div id="manual-set" style="display:none;">
+              <p class="Lectura">Posicion Valvula: <span class="reading"><span id="smpv"></span> %</span></p>
+              <p class="Lectura">Velocidad Bomba: <span class="reading"><span id="smvb"></span> %</span></p>
+            </div>
+            <div id="automatic-set" style="display:none;">
+              <p class="Lectura">Presion: <span class="reading"><span id="sape"></span> PSI</span></p>
+            </div>
           </div>
-          <!--HUMIDITY-->
+          <!--CAUDAL-->
           <div class="card">
-            <canvas id="gauge-humidity"></canvas>
+            <rockiot-ui 
+              id="gauge-caudal"
+              type="gauge"
+              variation="radial"
+              orientation="vertical"
+              serial="radial_base" 
+              name="Caudal" 
+              value="45" 
+              units="L/min" 
+              min="0" 
+              max="30" 
+              precision="1" 
+              animation="500" 
+              svgwidth="250" 
+              svgheight="250" 
+              text-color="#777" 
+              value-color="#777" 
+              value-bg="transparent" 
+              value-border="0px solid #fac83c" 
+              control-color="#cecece" 
+              control-bg="none" 
+              auto-test="1" 
+              startangle="135" 
+              endangle="45" 
+              radius="lg" 
+              size="lg" 
+              scale="0" 
+              smallscale="0" 
+              ticks="10" 
+              needle="0" 
+              bar-color="#444" 
+              progress-color="#4ea5f1" 
+              scale-color="#aaa" 
+              scale-text-color="#111" 
+              needle-color="#777" 
+              needle-stroke="#000" 
+            ></rockiot-ui>
           </div>
-        </div>
-      </div>
-
-      <!--CHARTS-->
-      <div id="charts-div" style="display:none">
-        <!--SET NUMBER OF READINGS INPUT FIELD-->
-        <div>
-          <p> Number of readings: <input type="number" id="charts-range"></p>
-        </div>
-        <!--TEMPERATURE-CHART-->
-        <div class="cards">
+          <!--NIVEL TANQUE-->
           <div class="card">
-            <p><i class="fas fa-thermometer-half" style="color:#059e8a;"></i> TEMPERATURE CHART</p>
-            <div id="chart-temperature" class="chart-container"></div>
+            <rockiot-ui 
+              id="gauge-nivel-tanque"
+              type="gauge"
+              variation="level"
+              orientation="vertical"
+              serial="level_0" 
+              name="Nivel Tanque" 
+              value="10" 
+              units="%" 
+              min="0" 
+              max="100" 
+              precision="1" 
+              animation="500" 
+              svgwidth="300" 
+              svgheight="300" 
+              text-color="#777" 
+              value-color="#777" 
+              value-bg="transparent" 
+              value-border="0px solid #fac83c" 
+              control-color="#cecece" 
+              control-bg="none" 
+              auto-test="1" 
+              progress-color="#4ea5f1" 
+              bar-color="#444" 
+              bar-border-color="#000" 
+              auto-color="0" 
+            ></rockiot-ui>
           </div>
-        </div>
-        <!--HUMIDITY-CHART-->
-        <div class="cards">
+          <!--PRESION JUMO-->
           <div class="card">
-            <p><i class="fas fa-tint" style="color:#00add6;"></i> HUMIDITY CHART</p>
-            <div id="chart-humidity" class="chart-container"></div>
+            <canvas id="gauge-presion-jumo"></canvas>
           </div>
-        </div>
-        <!--PRESSURE-CHART-->
-        <div class="cards">
+          <!--PRESION DELTA-->
           <div class="card">
-            <p><i class="fas fa-angle-double-down" style="color:#e1e437;"></i> PRESSURE CHART</p>
-            <div id="chart-pressure" class="chart-container"></div>
+            <canvas id="gauge-presion-delta"></canvas>
+          </div>
+          <!--VELOCIDAD BOMBA-->
+          <div class="card">
+            <canvas id="gauge-bomba"></canvas>
+          </div>
+          <!--POSICION VALVULA-->
+          <div class="card">
+            <rockiot-ui 
+              id="guage-posicion-valvula"
+              type="gauge"
+              variation="linear"
+              orientation="vertical"
+              serial="linear_3" 
+              name="Posicion Valvula" 
+              value="35" 
+              units="%" 
+              min="0"
+              max="100"
+              precision="1" 
+              animation="500" 
+              svgwidth="300" 
+              svgheight="300" 
+              text-color="#333" 
+              value-color="#777" 
+              value-bg="transparent" 
+              value-border="0px solid #fac83c" 
+              control-color="#888" 
+              control-bg="none" 
+              auto-test="1" 
+              orientation="vertical" 
+              size="md" 
+              scale="1" 
+              smallscale="1" 
+              ticks="10" 
+              needle="1" 
+              bar-color="#111" 
+              progress-color="#ff8000" 
+              scale-color="#aaa" 
+              scale-text-color="#333" 
+              needle-color="#ff8800" 
+              needle-stroke="#000" 
+              zones="" 
+            ></rockiot-ui>
+          </div>
+          <!--TEMPERATURA TANQUE-->
+          <div class="card">
+            <canvas id="gauge-temperatura-tanque"></canvas>
+          </div>
+          <!--TEMPERATURA CANERIA-->
+          <div class="card">
+            <canvas id="gauge-temperatura-caneria"></canvas>
           </div>
         </div>
       </div>
@@ -206,8 +294,8 @@
     <!--INCLUDE JS FILES-->
     <script src="scripts/auth.js"></script>
     <script src="scripts/charts-definition.js"></script>
+    <script src="scripts/gauges-definition.js"></script>
     <script src="scripts/index.js"></script>
-    <script src="scripts/charts.js"></script>
 
   </body>
 
