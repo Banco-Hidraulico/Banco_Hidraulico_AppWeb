@@ -65,12 +65,10 @@ function epochToJsDate(epochTime){
       console.log(uid);
   
       // Database paths (with user UID)
-      var dbPath = 'RDdata';
       var dbSensors = 'RDdata/Sensores';
       
   
       // Database references
-      var dbRef = firebase.database().ref(dbPath);
       var dbRefSensors = firebase.database().ref(dbSensors);
     
   
