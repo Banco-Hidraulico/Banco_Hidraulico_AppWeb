@@ -5,7 +5,7 @@ function onload(event){
   chartPid = createPidChart();
 }
 
-// Create Temperature Chart
+// Create PID Chart
 function createPidChart() {
   var chart = new Highcharts.Chart({
     chart:{ 
@@ -14,11 +14,13 @@ function createPidChart() {
     },
     series: [
       {
-        name: 'Valvula'
+        name: 'Set Presion'
       },{
-        name: 'Presion'
+        name: 'Presion Proceso'
       },{
-        name: 'Caudal'
+        name: 'Set Valvula'
+      },{
+        name: 'Posicion Valvula'
       }
     ],
     title: { 

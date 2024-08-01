@@ -61,12 +61,20 @@
   </head>
 
   <body onload="resetdb()">
-
-    <!--TOP BAR-->
-    <div class="topnav">
-      <h1>Banco Hidraulico <i class="fas fa-clipboard-list"></i></h1>
-    </div>
-
+    
+    <header class="header">
+      <div>
+        <h1>Banco Hidraulico <i class="fas fa-clipboard-list"></i></h1>
+      </div>
+      <div class="estates">
+        <p class="i-parada" id="indicador-parada"style="display:none;">Parada</p>
+        <p class="i-marcha" id="indicador-marcha"style="display:none;">Marcha</p>
+        <p class="i-falla" id="indicador-falla"style="display:none;">Falla</p>
+      </div>
+      
+        
+    </header>
+    
     <!--LOGIN FORM-->
     <form id="login-form" style="display: none;">
       <div class="form-elements-container">
@@ -89,7 +97,7 @@
       <p>
         Remoto: <input type="checkbox" id="cards-checkbox" name="cards-checkbox" checked>
         Indicadores: <input type="checkbox" id="gauges-checkbox" name="gauges-checkbox" checked>
-        Graficos: <input type="checkbox" id="charts-checkbox" name="charts-checkbox" unchecked>
+        Graficos: <input type="checkbox" id="charts-checkbox" name="charts-checkbox" checked>
       </p>
       
       <!--GAUGES-->
@@ -193,8 +201,6 @@
           </div>
           <!--POSICION VALVULA-->
           <div class="card">
-            <p><i class="fas fa-thermometer-half" style="color:#059e8a;"></i> Grafico PID</p>
-            <div id="chart-temperature" class="chart-container"></div>
             <rockiot-ui 
               id="guage-posicion-valvula"
               type="gauge"
@@ -241,6 +247,11 @@
             <canvas id="gauge-temperatura-caneria"></canvas>
           </div>
         </div>
+      </div>
+      <!--CHARTS-->
+      <div id="charts-div" class="card">
+        <p><i class="fas fa-thermometer-half" style="color:#059e8a;"></i> Grafico PID</p>
+        <div id="chart-temperature" class="chart-container"></div>
       </div>
       <!--CONTROL REMOTO-->
       <div id ="cards-div"></div>
@@ -297,6 +308,7 @@
     <script src="scripts/auth.js"></script>
     <script src="scripts/charts-definition.js"></script>
     <script src="scripts/gauges-definition.js"></script>
+    <script src="scripts/indicator.js"></script>
     <script src="scripts/index.js"></script>
     <script src="scripts/charts.js"></script>
 

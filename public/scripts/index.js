@@ -14,16 +14,18 @@ function epochToDateTime(epochTime){
   ("00" + epochDate.getSeconds()).slice(-2);
   return dateTime;
 }
-  
+
   // function to plot values on charts
-  function plotValues(chart, timestamp, value1, value2, value3){
+  function plotValues(chart, timestamp, value1, value2, value3,value4){
     var x = epochToJsDate(timestamp).getTime();
     var y1 = Number (value1);
     var y2 = Number (value2);
     var y3 = Number (value3);
+    var y4 = Number (value4);
     chart.series[0].addPoint([x,y1]);
     chart.series[1].addPoint([x,y2]);
-    chart.series[2].addPoint([x,y3]);
+    chart.series[2].addPoint([x,y3*0.00390625]);
+    chart.series[3].addPoint([x,y4]);
   }
   
 // DOM elements
@@ -89,12 +91,8 @@ const setupUI = (user) => {
     const dbPath = 'RDdata/Sensores' ;
     const dbPathRem = 'RDdata/ControlRemoto';
     const dbPathSet = 'RDdata/Seteos';
-     // Database paths (with user UID)
-     var dbSensors = 'RDdata/Sensores';
       
   
-     // Database references
-     var dbRefSensors = firebase.database().ref(dbSensors);
     // Database references
     var dbRef = firebase.database().ref(dbPath);
     var dbRem = firebase.database().ref(dbPathRem);
@@ -128,14 +126,6 @@ const setupUI = (user) => {
       else{
         chartsDivElement.style.display = 'none';
       }
-    });
-    dbRefSensors.on('value', snapshot =>{
-      var jsonData = snapshot.toJSON(); // example: {temperature: 25.02, humidity: 50.20, pressure: 1008.48, timestamp:1641317355}
-      var temperatureGauge = jsonData.TemperaturaTanque;
-      // Update DOM elements
-      var gaugeT = createTemperatureGauge();
-      gaugeT.draw();
-      gaugeT.value = temperatureGauge;
     });
     //CONTROL REMOTO
     requestRemoteButton.addEventListener('click', () => {
