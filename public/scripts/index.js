@@ -59,7 +59,12 @@ const smpvElement = document.getElementById("smpv");
 const smvbElement = document.getElementById("smvb");
 const sattElement = document.getElementById("satt");
 const sapeElement = document.getElementById("sape");
-
+// DOM elements indicators
+const iParada = document.getElementById("indicador-parada");
+const iMarcha = document.getElementById("indicador-marcha");
+const iFalla = document.getElementById("indicador-falla");
+const iNivel = document.getElementById("indicador-nivel");
+const estadoNivel = document.getElementById("estado-nivel");
 // DOM elements for sensor readings
 const cardsReadingsElement = document.querySelector("#cards-div");
 const gaugesReadingsElement = document.querySelector("#gauges-div");
@@ -91,14 +96,35 @@ const setupUI = (user) => {
     const dbPath = 'RDdata/Sensores' ;
     const dbPathRem = 'RDdata/ControlRemoto';
     const dbPathSet = 'RDdata/Seteos';
-      
-  
+    const dbPathIndicator = 'RDdata/Panel';
+
     // Database references
     var dbRef = firebase.database().ref(dbPath);
     var dbRem = firebase.database().ref(dbPathRem);
     var dbSet = firebase.database().ref(dbPathSet);
+    var dbIndicator = firebase.database().ref(dbPathIndicator);
     
-
+    //INDICATOR
+    dbIndicator.on('value',snapshot=>{
+      var data=snapshot.val();
+      var marcha = data.Arranque_General;
+      var falla = data.Parada_Emergencia_General;
+      console.log(marcha,falla);
+      if(marcha===1){
+          iMarcha.style.display = 'block';
+          iParada.style.display = 'none';
+          iFalla.style.display = 'none';
+      }else{
+          iParada.style.display = 'block';
+          iMarcha.style.display = 'none';
+          iFalla.style.display = 'none';
+      }
+      if(falla===1){
+          iFalla.style.display = 'block';
+          iMarcha.style.display = 'none';
+          iParada.style.display = 'none';
+      }
+    });
     //CHECKBOXES
     // Checbox (cards for sensor readings)
     cardsCheckboxElement.addEventListener('change', (e) =>{
@@ -237,6 +263,8 @@ const setupUI = (user) => {
       var lecturaValvula = data.LecturaValvula;
       var nivelTanque = data.NivelTanque;
       var caudal = data.Caudal;
+      var nivelBajoDeposito = data.NivelBajo;
+      var nivelAltoDeposito = data.NivelAlta;
       // Update DOM elements
       gaugeTT.draw();
       gaugeTC.draw();
@@ -251,7 +279,16 @@ const setupUI = (user) => {
       gaugePosition.setAttribute('value',lecturaValvula);
       gaugeLevel.setAttribute('value',nivelTanque);
       gaugeFlow.setAttribute('value',caudal);
-      
+      if(nivelAltoDeposito===1){
+        iNivel.style.backgroundColor= "#ffff31";
+        estadoNivel.innerHTML="Nivel de deposito Alto";
+      }else if(nivelBajoDeposito===1){
+        iNivel.style.backgroundColor="#218838";
+        estadoNivel.innerHTML="Nivel de deposito Optimo";
+      }else{
+        iNivel.style.backgroundColor="#c82333";
+        estadoNivel.innerHTML="Nivel de deposito Bajo";
+      }
     });
     dbSet.on('value',snapshot=>{
       var data=snapshot.val();
@@ -296,6 +333,9 @@ const setupUI = (user) => {
     // IF USER IS LOGGED OUT  
     } else{
       // toggle UI elements
+      iParada.style.display = 'none';
+      iFalla.style.display = 'none';
+      iMarcha.style.display = 'none';
       loginElement.style.display = 'block';
       authBarElement.style.display ='none';
       userDetailsElement.style.display ='none';

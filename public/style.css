@@ -18,10 +18,12 @@ body {
     padding-bottom: 2px;
     font-size: 1rem;
     position: fixed;
+    z-index: 1;
     left: 0;
     top: 0;
     right: 0;
 }
+
 .estates{
     padding: 0;
     margin: 0;
@@ -37,6 +39,20 @@ body {
     background-color: green;
 }.i-falla{
     background-color: rgb(252, 29, 29);
+}
+
+.nivel{
+    height: 50px;
+    display: flex;
+    align-items: center;
+}
+.indicador-nivel{
+    height: 80%;
+    width: 20%;
+    background-color: #000000;
+}
+#estado-nivel{
+    flex: 80%
 }
 .content-sign-in{
     padding-top: 6rem;
@@ -96,7 +112,9 @@ button:hover {
 .deletebtn{
     background-color: #c52c2c;
 }
-
+#login-form{
+    padding-top: 6rem;
+}
 .form-elements-container{
     padding: 16px;
     width: 250px;
